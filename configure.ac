@@ -16,7 +16,7 @@ AC_CANONICAL_HOST
 #
 #	Initialize automake stuff.
 #
-AM_INIT_AUTOMAKE(Maude-mfe-hooks, 2.7)
+AM_INIT_AUTOMAKE
 #
 #	Cause defines to be put in a header file rather than passed as
 #	compiler flags.
