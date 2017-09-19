@@ -77,7 +77,6 @@ reset_worktree  build/worktree
 checkout        "rebuild/1" 0d06e58f8e35
 apply_patch     initial-gitignore.patch
 apply_patch     initial-build.patch
-apply_patch     initial-derive-from-eker.patch
 merge_range     ^c8058de a1925ce 
 apply_patch     full-maude27.patch
 merge_range     ^a1925ce 3027849
