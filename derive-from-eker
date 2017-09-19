@@ -52,7 +52,9 @@ merge() {
     git merge --quiet --no-commit --strategy recursive --strategy-option ours "$ref" || true
     git ls-files --ignored --exclude-standard | sort -u | xargs -I file rm file
     git add -u
-    git commit --reuse-message="$ref" --no-edit
+
+    local message="Import $(git log -1 --format=%s $ref)"
+    git commit -m "$message"
 }
 
 # Description of history
