@@ -2,25 +2,48 @@
 
 set -e
 
-stop_point="$1" && shift
-eker_branch="origin/eker/develop"
+base_dir="$(cd "$(dirname "$0")"; pwd)"
 
-current_eker() { git merge-base HEAD $eker_branch ; }
-next_eker()    { git rev-list --topo-order "$(current_eker)..$eker_branch" | tail -n 1 ; }
-
-do_next() {
-    eker_next=$(next_eker)
-
-    git clean -dfx
-
-    git merge --no-commit --strategy recursive --strategy-option ours "$eker_next" || true
-
-    git ls-files --ignored --exclude-standard | sort -u | xargs -I file rm file
-    git add -u
-
-    git commit --reuse-message="$eker_next" --no-edit
-
-    git status
+reset_worktree() {
+    local worktree="$1"; shift
+    cd "$base_dir"
+    rm -rf "$worktree"
+    git worktree prune
+    git worktree add --detach "$worktree"
+    cd "$worktree"
 }
 
-while [[ "$(current_eker)" != "$(git rev-parse "$stop_point")" ]]; do do_next; done
+checkout() {
+    local branch="$1"; shift
+    local begin_ref="$1"; shift
+
+    git checkout -b "$branch" "$begin_ref" 
+}
+
+apply_patch() {
+    git am "$base_dir/patches/$1"
+}
+
+merge_range() {
+    while read ref; do
+        merge "$ref"
+    done < <(git rev-list --reverse "$@")
+}
+
+merge() {
+    local ref="$1"; shift
+    git clean -dfx
+    git merge --quiet --no-commit --strategy recursive --strategy-option ours "$ref" || true
+    git ls-files --ignored --exclude-standard | sort -u | xargs -I file rm file
+    git add -u
+    git commit --reuse-message="$ref" --no-edit
+}
+
+reset_worktree  build/worktree
+checkout        "rebuild/1" 0d06e58f8e35
+apply_patch     initial-gitignore.patch
+apply_patch     initial-build.patch
+apply_patch     initial-derive-from-eker.patch
+merge_range     ^c8058de a1925ce 
+apply_patch     full-maude27.patch
+merge_range     ^a1925ce 3027849
