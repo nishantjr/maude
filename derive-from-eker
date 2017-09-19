@@ -1,8 +1,24 @@
 #!/usr/bin/env bash
 
-set -e
+# This file implements a DSL to rebuild the history of this from Steven Eker's
+# source commits. Using this DLS allows us to have a "second order" versioning
+# over the history itself, and allows us to revert to previous histories
+# if we mess up, as we poor humans do.
+#
+# As humans, we are vain too, and so go through the trouble to pretend that
+# every commit we do is close to perfect. Thus we often go back and rewrite
+# history. To allow doing this easily, we commit the patches themselves.
+#
+# Patches are generated using `git format-patch -1 <ref>`. 
+# We don't try to use Eker's changes as patches since they'd be to unweildy to
+# manage. 
+#
 
+set -e
 base_dir="$(cd "$(dirname "$0")"; pwd)"
+
+# DSL Implementation
+# ==================
 
 reset_worktree() {
     local worktree="$1"; shift
@@ -38,6 +54,9 @@ merge() {
     git add -u
     git commit --reuse-message="$ref" --no-edit
 }
+
+# Description of history
+# ======================
 
 reset_worktree  build/worktree
 checkout        "rebuild/1" 0d06e58f8e35
