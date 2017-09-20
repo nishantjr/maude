@@ -1,4 +1,4 @@
-From ec2f3abf82b9a95ce2c2774a1b46d76943e24bec Mon Sep 17 00:00:00 2001
+From a00f35f196b18c63b038cb02acb0fbb5e8975d21 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:10:14 -0500
 Subject: [PATCH] build (new): adding script to generate build products and
@@ -6,18 +6,28 @@ Subject: [PATCH] build (new): adding script to generate build products and
 
 Note: We must recover the file `src/Mixfix/surface.cc` because it is not kept in
 sync with the files which generate it.
+
+-   Using C++14
+-   Using ccache (if it's available)
+-   Building using autotools
+-   Parallel build `-j4`
+-   Quite more informative build `-s`
 ---
- build | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ build | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
  create mode 100755 build
 
 diff --git a/build b/build
 new file mode 100755
-index 0000000..732fad2
+index 0000000..3fa953f
 --- /dev/null
 +++ b/build
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,18 @@
 +#!/usr/bin/env bash
++
++export CXXFLAGS="-std=c++14 -Wall $CFLAGS"
++export PATH="/usr/lib/ccache/bin:$PATH"
++export PATH="/usr/lib/ccache:$PATH"
 +
 +automake --add-missing
 +
@@ -26,11 +36,11 @@ index 0000000..732fad2
 +    && autoheader \
 +    && automake \
 +    && ./configure \
-+    && make
++    && make -s -j4
 +
 +git checkout -- src/Mixfix/surface.cc
 +
-+make
++make -s -j4
 -- 
-2.14.1
+2.13.5
 
