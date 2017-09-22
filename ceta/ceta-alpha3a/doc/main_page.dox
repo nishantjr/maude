@@ -1,0 +1,32 @@
+/** \mainpage The Libceta Reference
+
+\section intro_sec Introduction
+The ceta library is part of an effort to develop efficient decision
+procedures and semi-decision procedures for reasoning about tree autoamta.
+The library is still in an early development state, and mainly focused on 
+providing a foundation for building a sufficient completeness checking
+tool for Maude, however the library itself is written in C++ and intended
+to be used in other contexts as it matures.  Currently, the library
+contains algorithms and datastructures for the following:
+ - Semilinear sets including algorithms for intersection and
+   complementation;
+ - Parikh Construction of a Context-Free Grammar;
+ - Emptiness testing of AC-propositional tree automata.
+
+\section build_sec Build Requirements
+
+libceta is written in C++ and uses the GNU build system including
+Autoconf, and Automake.  It also depends on the Boost C++ library.  It has
+been tested to build correctly with GCC versions 3.3.5 - 4.0  and Boost
+version 1.32.0.  libceta is expected to be compatible with other recent
+C++ compilers, however due to the current lack of ABI compatibility
+between different C++ compilters, it is highly recommended that the same
+compiler is used for compiling the library and applications that link
+against it.
+
+\section starting_set Getting Started
+
+Since you are probably most interested in libceta for its tree automata
+decision procedures, you should probably start by looking at the
+documentation for ceta.hh.
+*/

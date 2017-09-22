@@ -1,0 +1,6 @@
+# vim: ft=make
+EXTRA_PROGRAMS = examples/example1
+examples : $(EXTRA_PROGRAMS)
+
+examples_example1_SOURCES = examples/example1.cc
+examples_example1_LDADD = $(LDADD) $(CETA_LIB) 

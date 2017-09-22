@@ -1,0 +1,6 @@
+# vim: ft=automake
+examples_example1_SOURCES = examples/example1.cc
+examples_example1_LDADD = $(LDADD) $(CETA_LIB)
+
+examples_example2_SOURCES = examples/example2.cc
+examples_example2_LDADD = $(LDADD) $(CETA_LIB)

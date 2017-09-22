@@ -1,0 +1,35 @@
+# vim: ft=make
+TESTS = tests/testmatrix \
+        tests/testld \
+        tests/testsls \
+        tests/testparikh \
+	tests/testearley \
+	tests/testfa \
+	tests/testlearn \
+	tests/testlearncfg \
+	tests/testclosure \
+        tests/testceta
+
+check_PROGRAMS = $(TESTS)
+
+tests_testmatrix_SOURCES   = tests/testmatrix.cc 
+tests_testmatrix_LDADD     = $(LDADD) $(CETA_LIB)
+tests_testld_SOURCES       = tests/testld.cc   
+tests_testld_LDADD         = $(LDADD) $(CETA_LIB)
+tests_testsls_SOURCES      = tests/testsls.cc
+tests_testsls_LDADD        = $(LDADD) $(CETA_LIB)
+tests_testparikh_SOURCES   = tests/testparikh.cc ceta/parikh.hh
+tests_testparikh_LDADD     = $(LDADD) $(CETA_LIB)
+tests_testearley_SOURCES   = tests/testearley.cc \
+			     ceta/earley.hh ceta/qcontainer.hh
+tests_testfa_SOURCES       = tests/testfa.cc ceta/fa.hh
+tests_testlearn_SOURCES    = tests/testlearn.cc \
+			     ceta/fa.hh ceta/learn.hh
+tests_testlearncfg_SOURCES = tests/testlearncfg.cc \
+			     ceta/learncfg.hh \
+			     ceta/learn.hh \
+			     ceta/earley.hh ceta/qcontainer.hh
+tests_testclosure_SOURCES  = tests/testclosure.cc
+tests_testclosure_LDADD    = $(LDADD) $(CETA_LIB)
+tests_testceta_SOURCES     = tests/testceta.cc
+tests_testceta_LDADD       = $(LDADD) $(CETA_LIB)

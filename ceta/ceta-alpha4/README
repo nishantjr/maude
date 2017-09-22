@@ -1,0 +1,11 @@
+Ceta -- A library for Combining Equational Tree Automata.
+
+Copyright 2005 Joe Hendrix (jhendrix@uiuc.edu)
+
+Documentation
+-------------
+
+The main documentation for libceta is in html built from the sources using
+doxygen.  If you have installed libceta using the directions in INSTALL, 
+point your webbrowser to "${prefix}/shared/doc/ceta/html" where ${prefix}
+is the prefix ceta was installed into (normally "/usr/local").

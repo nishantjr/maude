@@ -1,0 +1,18 @@
+# vim: ft=make
+lib_LIBRARIES = ceta/libceta.a
+pkginclude_HEADERS = ceta/ceta.hh ceta/export.h
+
+ceta_libceta_a_SOURCES = ceta/bi_graph.hh \
+			 ceta/matrix.hh \
+                         ceta/ldsolver.hh \
+                         ceta/ldsolver.cc \
+                         ceta/writer.hh \
+                         ceta/sls.hh \
+                         ceta/sls.cc \
+                         ceta/combinations.hh \
+			 ceta/proxy.hh \
+                         ceta/parikh.hh \
+                         ceta/parikh.cc \
+                         ceta/ceta.hh \
+			 ceta/closure.hh \
+                         ceta/ceta.cc

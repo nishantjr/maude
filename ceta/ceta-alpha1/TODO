@@ -1,0 +1,29 @@
+TODO:
+* Figure out plan for associative case.
+
+Done 12/18
+* Add example to documentation
+* Make add_kind, add_op, and add_state return iterators pointing to added 
+  element.
+* Add conversion from test_result_t to const bool.
+* Add make_constant_rule and make_unary_rule to ceta.hh
+* Detect doxygen in configure
+* Rename api-doc to "documentation"
+* Rename impl-doc to "dev-documentation"
+* Refer to program as ceta rather than libceta
+* Modify example to use ceta/ceta.hh
+* Make ceta.hh the only header file parsed by api-doc
+* Eliminate warnings
+* Update boost detection in configure
+* Add make examples target
+* Have default make not build examples
+* Stop using any old C ".h" header files
+* Make ceta.hh installed to ceta subdirectory
+* Get documentation part of default install
+* Test installation
+* Get README AUTHORS COPYING INSTALL copyright doc/api 
+  to /usr/share/doc/ceta/
+* Update README to refer to documentation in /usr/share/doc/ceta
+  and include directions for building
+* Update webpage with new documentation, tar, website, and push changes to
+  Darcs repository.
