@@ -20,11 +20,16 @@ base_dir="$(cd "$(dirname "$0")"; pwd)"
 # DSL Implementation
 # ==================
 
-reset_worktree() {
+clean_worktree() {
     local worktree="$1"; shift
     cd "$base_dir"
     rm -rf "$worktree"
     git worktree prune
+}
+
+reset_worktree() {
+    local worktree="$1"; shift
+    clean_worktree "$worktree"
     git worktree add --detach "$worktree"
     cd "$worktree"
 }
@@ -98,4 +103,4 @@ checkout        "rebuild/$history" 'eker/maude-2.0.1^'
 reset_worktree  "$tmp_worktree"
 build_history   "$history"
 git checkout    "$builder_branch"
-reset_worktree  "$tmp_worktree"
+clean_worktree  "$tmp_worktree"
