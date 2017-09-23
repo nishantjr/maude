@@ -1,2 +1,2 @@
-./build-hist    maude-2.7
+build_history   maude-2.7
 merge_range     '^eker/maude-2.7' 'eker/develop'
