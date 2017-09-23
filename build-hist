@@ -37,7 +37,8 @@ checkout() {
 }
 
 apply_patch() {
-    git am <(git show "$builder_branch:patches/$1")
+    patch_name="$1"; shift
+    git show "$builder_branch:patches/$patch_name" | git am
 }
 
 merge_range() {
