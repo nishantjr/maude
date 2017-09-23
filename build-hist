@@ -86,4 +86,5 @@ usage() {
 
 history="$hist_dir/$1" || usage
 [[ -f "$history" ]]    || usage
+checkout "rebuild/$1" 'eker/maude-2.0.1^'
 source "$history"
