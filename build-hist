@@ -37,7 +37,7 @@ checkout() {
 }
 
 apply_patch() {
-    git am "$base_dir/patches/$1"
+    git am <(git show "$builder_branch:patches/$1")
 }
 
 merge_range() {
@@ -74,6 +74,7 @@ merge() {
 # ====
 
 hist_dir='histories'
+builder_branch="second-order/hist-rebuilder"
 
 usage() {
     echo "usage: $0 <history>
