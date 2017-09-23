@@ -97,3 +97,5 @@ history="$1" && [[ -f "$hist_dir/$history" ]] || usage
 checkout        "rebuild/$history" 'eker/maude-2.0.1^'
 reset_worktree  "$tmp_worktree"
 build_history   "$history"
+git checkout    "$builder_branch"
+reset_worktree  "$tmp_worktree"
