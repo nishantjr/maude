@@ -69,3 +69,21 @@ merge() {
     GIT_AUTHOR_EMAIL="derive-from-eker@maude-team"    \
         git commit -m "$message"
 }
+
+# Main
+# ====
+
+hist_dir='histories'
+
+usage() {
+    echo "usage: $0 <history>
+
+    <history>: File in '$hist_dir/' specifying the history to build.
+               Options are: $(ls $hist_dir/)
+"
+    exit 1
+}
+
+history="$hist_dir/$1" || usage
+[[ -f "$history" ]]    || usage
+source "$history"
