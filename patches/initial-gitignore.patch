@@ -1,19 +1,19 @@
-From 8de87b4962910f13f99592b5f32e6e83de96b39e Mon Sep 17 00:00:00 2001
+From fdfca7fec077c8f53412cb83556d2a6fdcd7d872 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:04:41 -0500
 Subject: [PATCH] .gitignore (new): ignoring build products
 
 ---
- .gitignore | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ .gitignore | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
  create mode 100644 .gitignore
 
 diff --git a/.gitignore b/.gitignore
 new file mode 100644
-index 0000000..5820247
+index 00000000..d52ec4ee
 --- /dev/null
 +++ b/.gitignore
-@@ -0,0 +1,30 @@
+@@ -0,0 +1,33 @@
 +# metadata files
 +*~
 +*.sw*
@@ -39,7 +39,10 @@ index 0000000..5820247
 +*.trs
 +
 +# generated parser files
-+src/Mixfix/lexer.cc
++/src/Mixfix/lexer.cc
++/src/Mixfix/surface.h
++/src/Mixfix/surface.output
++/src/Mixfix/surface.yy
 +
 +# some of the versions of Maude do not correctly sync src/Mixfix/surface.* with the files it's built from
 +# until this is fixed, these files will not be ignored
