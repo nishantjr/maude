@@ -79,7 +79,7 @@ usage() {
     echo "usage: $0 <history>
 
     <history>: File in '$hist_dir/' specifying the history to build.
-               Options are: $(ls $hist_dir/)
+               Options are: $(ls $hist_dir/ | tr '\n' ' ')
 "
     exit 1
 }
