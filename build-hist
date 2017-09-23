@@ -71,6 +71,11 @@ merge() {
         git commit -m "$message"
 }
 
+build_history() {
+    local hist_file="$1"; shift
+    source <(git show "$builder_branch:histories/$hist_file")
+}
+
 # Main
 # ====
 
@@ -86,7 +91,6 @@ usage() {
     exit 1
 }
 
-history="$hist_dir/$1" || usage
-[[ -f "$history" ]]    || usage
-checkout "rebuild/$1" 'eker/maude-2.0.1^'
-source "$history"
+history="$1" && [[ -f "$hist_dir/$history" ]] || usage
+checkout "rebuild/$history" 'eker/maude-2.0.1^'
+build_history "$history"
