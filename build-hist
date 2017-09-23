@@ -81,6 +81,7 @@ build_history() {
 
 hist_dir='histories'
 builder_branch="second-order/hist-rebuilder"
+tmp_worktree=".build/worktree"
 
 usage() {
     echo "usage: $0 <history>
@@ -92,5 +93,7 @@ usage() {
 }
 
 history="$1" && [[ -f "$hist_dir/$history" ]] || usage
-checkout "rebuild/$history" 'eker/maude-2.0.1^'
-build_history "$history"
+
+checkout        "rebuild/$history" 'eker/maude-2.0.1^'
+reset_worktree  "$tmp_worktree"
+build_history   "$history"
