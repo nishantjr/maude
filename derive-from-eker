@@ -69,14 +69,3 @@ merge() {
     GIT_AUTHOR_EMAIL="derive-from-eker@maude-team"    \
         git commit -m "$message"
 }
-
-# Description of history
-# ======================
-
-reset_worktree  .build/worktree
-checkout        'rebuild/1' 'eker/maude-2.0.1^'
-apply_patch     initial-gitignore.patch
-apply_patch     initial-build.patch
-merge_range     '^eker/maude-2.0.1^' 'eker/maude-2.7'
-apply_patch     full-maude27.patch
-merge_range     '^eker/maude-2.7' 'eker/develop'

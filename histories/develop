@@ -1,0 +1,9 @@
+# This history specifies how to build the `develop` branch of Maude.
+
+reset_worktree  .build/worktree
+checkout        'rebuild/1' 'eker/maude-2.0.1^'
+apply_patch     initial-gitignore.patch
+apply_patch     initial-build.patch
+merge_range     '^eker/maude-2.0.1^' 'eker/maude-2.7'
+apply_patch     full-maude27.patch
+merge_range     '^eker/maude-2.7' 'eker/develop'
