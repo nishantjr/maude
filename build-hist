@@ -78,7 +78,11 @@ merge() {
 
 build_history() {
     local hist_file="$1"; shift
-    source <(git show "$builder_branch:histories/$hist_file")
+    local hist_branch="rebuild/$hist_file"
+    existsing_history="$(git rev-parse --verify "$hist_branch" 2>/dev/null)" \
+        || source <(git show "$builder_branch:histories/$hist_file") \
+        && git branch "$hist_branch" HEAD
+    git checkout "$hist_branch"
 }
 
 # Main
@@ -99,9 +103,8 @@ usage() {
 
 history="$1" && [[ -f "$hist_dir/$history" ]] || usage
 
-checkout        "rebuild/$history" 'eker/maude-2.0.1^'
+git checkout    'eker/maude-2.0.1^'
 reset_worktree  "$tmp_worktree"
 build_history   "$history"
-git checkout -B "rebuild/$history"
 git checkout    "$builder_branch"
 clean_worktree  "$tmp_worktree"
