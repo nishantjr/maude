@@ -79,9 +79,13 @@ merge() {
 build_history() {
     local hist_file="$1"; shift
     local hist_branch="rebuild/$hist_file"
-    existsing_history="$(git rev-parse --verify "$hist_branch" 2>/dev/null)" \
-        || source <(git show "$builder_branch:histories/$hist_file") \
-        && git branch "$hist_branch" HEAD
+    existsing_history="$(git rev-parse --verify "$hist_branch" 2>/dev/null)"
+    if [[ "$?" == '0' ]]; then
+        git checkout "$hist_branch"
+    else
+        source <(git show "$builder_branch:histories/$hist_file")
+        git branch "$hist_branch" HEAD
+    fi
     git checkout "$hist_branch"
 }
 
