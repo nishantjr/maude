@@ -1,0 +1,52 @@
+From e39c4c8eac4f54a35f4260f3f662b16ba0bc9b17 Mon Sep 17 00:00:00 2001
+From: Everett Hildenbrandt <hildenb2@illinois.edu>
+Date: Sat, 23 Sep 2017 10:32:40 -0500
+Subject: [PATCH] build, .gitignore: building cvc4 before maude
+
+-   CVC4 is built manually because not many distributions have actively maintained CVC4 packages.
+-   Antlr 3.4 needs to be fetched beforehand, which the CVC4 packages provide a way to do.
+-   ./configure is run with `--prefix` set so that Maude can find the include headers.
+-   Directory `/.build` is ignored (where build products will be placed).
+---
+ .gitignore |  1 +
+ build      | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index d52ec4ee..46b5e7e5 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -10,6 +10,7 @@
+ /aclocal.m4
+ /configure
+ /config.*
++/.build
+ stamp-*
+ .dirstamp
+ Makefile
+diff --git a/build b/build
+index d8d01e09..9de0cae6 100755
+--- a/build
++++ b/build
+@@ -3,6 +3,18 @@
+ export PATH="/usr/lib/ccache/bin:$PATH"
+ export PATH="/usr/lib/ccache:$PATH"
+ 
++top_dir="$(pwd)"
++
++( git submodule update --init \
++    && cd src/SMT/cvc4 \
++    && ./autogen.sh \
++    && ./contrib/get-antlr-3.4 \
++    && ./configure --prefix=$top_dir/.build/local \
++                   --with-antlr-dir=$(pwd)/antlr-3.4 ANTLR=$(pwd)/antlr-3.4/bin/antlr3 \
++    && make -s -j4 \
++    && make -s install
++)
++
+ automake --add-missing
+ 
+ aclocal \
+-- 
+2.13.5
+
