@@ -1,0 +1,4 @@
+build_history maude-2.7-cvc4-pre
+apply_patch   cvc4-submodule.patch
+apply_patch   build-cvc4.patch
+apply_patch   add-local-includes.patch
