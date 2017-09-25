@@ -1,31 +1,31 @@
-From a00f35f196b18c63b038cb02acb0fbb5e8975d21 Mon Sep 17 00:00:00 2001
+From 5f7487bec6a25aa968bfa6d314e3df05ced0109d Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:10:14 -0500
-Subject: [PATCH] build (new): adding script to generate build products and
- build
+Subject: [PATCH] build (new), configure.ac: adding script to generate build
+ products and build
 
 Note: We must recover the file `src/Mixfix/surface.cc` because it is not kept in
 sync with the files which generate it.
 
--   Using C++14
+-   Using C++11 (set in configure.ac)
 -   Using ccache (if it's available)
 -   Building using autotools
 -   Parallel build `-j4`
 -   Quite more informative build `-s`
 ---
- build | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ build        | 17 +++++++++++++++++
+ configure.ac |  2 +-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
  create mode 100755 build
 
 diff --git a/build b/build
 new file mode 100755
-index 0000000..3fa953f
+index 00000000..d8d01e09
 --- /dev/null
 +++ b/build
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,17 @@
 +#!/usr/bin/env bash
 +
-+export CXXFLAGS="-std=c++14 -Wall $CFLAGS"
 +export PATH="/usr/lib/ccache/bin:$PATH"
 +export PATH="/usr/lib/ccache:$PATH"
 +
@@ -41,6 +41,19 @@ index 0000000..3fa953f
 +git checkout -- src/Mixfix/surface.cc
 +
 +make -s -j4
+diff --git a/configure.ac b/configure.ac
+index f12c9a92..4c13af14 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -35,7 +35,7 @@ fi
+ USER_SET_CXXFLAGS=yes
+ if (test -z "$CXXFLAGS") then
+   USER_SET_CXXFLAGS=no
+-  CXXFLAGS="-g"
++  CXXFLAGS="-std=c++11 -g -Wall"
+ fi
+ #
+ #	*** PROGRAMS ***
 -- 
 2.13.5
 
