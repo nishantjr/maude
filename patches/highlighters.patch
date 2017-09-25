@@ -1,0 +1,525 @@
+From d66bd929910ed0616e56f1ac818463b7f2cc85ff Mon Sep 17 00:00:00 2001
+From: Everett Hildenbrandt <hildenb2@illinois.edu>
+Date: Sat, 23 Sep 2017 11:16:13 -0500
+Subject: [PATCH] contrib/highlighters: adding vim/kakoune/pygments
+ highlighters
+
+---
+ contrib/highlighters/README.md   |  39 ++++++
+ contrib/highlighters/maude.kak   |  50 +++++++
+ contrib/highlighters/maude.vim   | 104 ++++++++++++++
+ contrib/highlighters/pygments.py | 288 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 481 insertions(+)
+ create mode 100644 contrib/highlighters/README.md
+ create mode 100644 contrib/highlighters/maude.kak
+ create mode 100644 contrib/highlighters/maude.vim
+ create mode 100644 contrib/highlighters/pygments.py
+
+diff --git a/contrib/highlighters/README.md b/contrib/highlighters/README.md
+new file mode 100644
+index 00000000..1e429efd
+--- /dev/null
++++ b/contrib/highlighters/README.md
+@@ -0,0 +1,39 @@
++Highlighters for Maude
++======================
++
++-   [Vim editor highlighter](maude.vim)
++-   [Kakoune editor highlighter](maude.kak)
++-   [Pygments PDF highlighter](pygments.py)
++
++Pygments Usage
++--------------
++
++### Command Line
++
++In order to use these lexers on the command line, pass the parameter
++`-l /path/to/pygments_maude.py:MaudeLexer -x` (for batch Maude code) or
++`-l /path/to/pygments_maude.py:MaudeLogLexer -x` (for Maude system interaction
++logs) to the `pygmentize` comand in place of a language flag (where
++`/path/to/pygments_maude.py` are replaced by the actual local path to the file
++[`pygments_maude.py`](https://raw.githubusercontent.com/pthariensflame/pygments-maude/master/pygments_maude.py)
++from this repository).
++
++### LaTeX/`minted`
++
++In order to use these lexers with [LaTeX](http://www.latex-project.org) and
++[`minted`](https://github.com/gpoore/minted), put the following lines into your
++document preamble:
++
++``` latex
++\usepackage{xparse}
++\NewExpandableDocumentCommand\maudeLexer{}{pygments_maude.py:MaudeLexer -x}
++\NewExpandableDocumentCommand\maudeLogLexer{}{pygments_maude.py:MaudeLogLexer -x}
++```
++
++Then place the the file
++[`pygments_maude.py`](https://raw.githubusercontent.com/pthariensflame/pygments-maude/master/pygments_maude.py)
++from this repository into the same directory as your document; you should now be
++able to use `\maudeLexer` and `\maudeLogLexer` as languages recognized by all
++`minted` commands. (Note that this will require a fairly recent version of
++`minted`, as well as a TeX install that supports
++[LaTeX3](https://www.latex-project.org/latex3/).)
+diff --git a/contrib/highlighters/maude.kak b/contrib/highlighters/maude.kak
+new file mode 100644
+index 00000000..1ff739b9
+--- /dev/null
++++ b/contrib/highlighters/maude.kak
+@@ -0,0 +1,50 @@
++# maude
++# =====
++
++# Detection
++# ---------
++
++hook global BufSetOption mimetype=text/x-maude %{
++    set buffer filetype maude
++}
++
++hook global BufCreate .*[.](maude) %{
++    set buffer filetype maude
++}
++
++# Highlighters
++# ------------
++
++addhl -group / regions -default code maude \
++    string   '"'     (?<!\\)(\\\\)*"      '' \
++    comment ---\(   \)---              ---\( \
++    comment  (---) $                      '' \
++    macro   ^\h*?\K# (?<!\\)\n            ''
++
++addhl -group /maude/string  fill string
++addhl -group /maude/comment fill comment
++addhl -group /maude/macro   fill meta
++
++addhl -group /maude/code regex \b(load|quit|in|eof|popd|pwd|ls|cd|parse|reduce|red|rewrite|rew|frewrite|erewrite|xmatch|search)\b 0:meta
++addhl -group /maude/code regex \b(mod|endm|fmod|endfm|omod|endom|fth|endfth|th|endth|view|endv)\b 0:keyword
++addhl -group /maude/code regex \b(is|protecting|including|extending)\b 0:keyword
++addhl -group /maude/code regex \b(sort|sorts|subsort|subsorts|op|ops|var|vars|eq|ceq|rl|crl|md|cmb)\b 0:keyword
++addhl -group /scala/code regex \b(assoc|comm|left|right|id|idem|iter|memo|ditto|config|obj|msg|metadata|strat|poly|frozen|prec|gather|format|special|nonexec|otherwise|owise|variant|label|print|id-hook|op-hook|term-hook)\b 0:attribute
++addhl -group /maude/code regex \b(QID|CONVERSION|STRING|RAT|FLOAT|COUNTER|INT|RANDOM|NAT|EXT-BOOL|BOOL|TRUTH|BOOL-OPS|TRUTH-VALUE)\b 0:type
++
++# Markdown
++# ========
++
++# addhl -group / regions -default content markdown \
++#     sh         ```maude   ```                    ''
++
++# Initialization
++# ==============
++
++hook global WinSetOption filetype=maude %[
++    addhl ref maude
++]
++
++hook global WinSetOption filetype=(?!maude).* %{
++    rmhl maude
++}
+diff --git a/contrib/highlighters/maude.vim b/contrib/highlighters/maude.vim
+new file mode 100644
+index 00000000..14a134cf
+--- /dev/null
++++ b/contrib/highlighters/maude.vim
+@@ -0,0 +1,104 @@
++" Vim syntax file
++" Language:      Maude <http://maude.cs.uiuc.edu/>
++" Maintainer:    Steven N. Severinghaus <sns@severinghaus.org>
++" Last Modified: 2005-02-03
++" Version: 0.1
++" From: github.com/vim-scripts/maude.vim
++
++" Quit if syntax file is already loaded
++if version < 600
++  syntax clear
++elseif exists("b:current_syntax")
++  finish
++endif
++
++command! -nargs=+ MaudeHiLink hi def link <args>
++
++syn keyword maudeModule     mod fmod omod endm endfm endm fth endfth th endth view endv is
++syn keyword maudeImports    protecting including extending
++syn keyword maudeSorts      sorts sort subsorts subsort
++syn keyword maudeStatements op ops var vars eq ceq rl crl mb cmb
++syn match   maudeFlags      "\[.*\]"
++syn keyword maudeCommands   reduce
++syn match   maudeComment    "\*\*\*.*"
++syn match   maudeComment    "---.*"
++syn match   maudeOps        "->"
++syn match   maudeOps        ":"
++"syn match   maudeOps        "^\s*subsorts[^<]*<"hs=e-1
++"syn match   maudeOps        "^\s*ceq[^=]*="
++syn match   maudeOps        "="
++syn match   maudeOps        "\.\s*$"
++
++syn keyword maudeModules    INT FLOAT NAT RAT BOOL QID TRUTH IDENTICAL STRING
++syn keyword maudeModules    CONVERSION
++syn match   maudeModules    "TRUTH-VALUE"
++syn match   maudeModules    "EXT-BOOL"
++syn match   maudeModules    "QID-LIST"
++syn match   maudeModules    "META-MODULE"
++syn match   maudeModules    "META-TERM"
++syn match   maudeModules    "META-LEVEL"
++syn match   maudeModules    "LOOP-MODE"
++syn match   maudeModules    "CONFIGURATION"
++
++syn keyword maudeSorts      Bool Int Float Nat Qid
++syn keyword maudeSorts      Zero NzNat NzInt NzRat Rat FiniteFloat
++syn keyword maudeSorts      String Char FindResult DecFloat
++
++syn keyword maudeAttrs      assoc comm idem iter id left-id right-id strat memo
++syn keyword maudeAttrs      prec gather format ctor config object msg frozen
++syn keyword maudeAttrs      poly special label metadata owise nonexec
++
++" Meta stuff; this may not actually be useful
++syn keyword maudeSorts      Sort Kind Type
++syn keyword maudeSorts      Constant Variable GroundTerm Term GroundTermList TermList
++syn keyword maudeSorts      Assignment Substitution
++syn keyword maudeSorts      Context CTermList GTermList
++syn keyword maudeSorts      Attr AttrSet
++syn keyword maudeSorts      Renaming RenamingSet
++syn keyword maudeSorts      ModuleExpression
++syn keyword maudeSorts      Import ImportList
++syn keyword maudeSorts      SortSet SubsortDecl SubsortDeclSet
++syn keyword maudeSorts      TypeList NatList QidList
++syn keyword maudeSorts      Hook HookList
++syn keyword maudeSorts      OpDecl OpDeclSet EqCondition Condition
++syn keyword maudeSorts      MembAx MembAxSet Equation EquationSet
++syn keyword maudeSorts      Rule RuleSet
++syn keyword maudeSorts      FModule SModule FTheory STheory Module
++syn keyword maudeSorts      Bound KindSet
++syn keyword maudeSorts      ResultPair ResultTriple Result4Tuple MatchPair
++syn keyword maudeSorts      State System
++syn keyword maudeSorts      Attribute AttributeSet
++syn keyword maudeSorts      Oid Cid Object Msg Configuration
++syn match   maudeSorts      "Type\?"
++syn match   maudeSorts      "ResultPair\?"
++syn match   maudeSorts      "ResultTriple\?"
++syn match   maudeSorts      "Result4Tuple\?"
++syn match   maudeSorts      "MatchPair\?"
++syn match   maudeSorts      "Substitution\?"
++
++" From the BOOL module
++syn keyword maudeStatements and or xor not implies
++
++syn keyword maudeLiteral    true false
++syn match   maudeLiteral    "\<\(0[0-7]*\|0[xX]\x\+\|\d\+\)[lL]\=\>"
++syn match   maudeLiteral    "\(\<\d\+\.\d*\|\.\d\+\)\([eE][-+]\=\d\+\)\=[fFdD]\="
++
++MaudeHiLink maudeModule     PreProc
++MaudeHiLink maudeImports    PreProc
++MaudeHiLink maudeSorts      Type
++MaudeHiLink maudeStatements Keyword
++MaudeHiLink maudeModules    String
++MaudeHiLink maudeComment    Comment
++MaudeHiLink maudeOps        Special
++MaudeHiLink maudeCommands   Special
++MaudeHiLink maudeFlags      PreProc
++MaudeHiLink maudeSorts      Type
++MaudeHiLink maudeLiteral    String
++"hi def     maudeMisc       term=bold cterm=bold gui=bold
++
++delcommand MaudeHiLink
++
++let b:current_syntax = "maude"
++
++"EOF vim: tw=78:ft=vim:ts=8
++
+diff --git a/contrib/highlighters/pygments.py b/contrib/highlighters/pygments.py
+new file mode 100644
+index 00000000..3b46dfae
+--- /dev/null
++++ b/contrib/highlighters/pygments.py
+@@ -0,0 +1,288 @@
++"This module provides Pygments lexers for the Maude language and its interactive environment."
++
++from pygments.lexer import RegexLexer, words, bygroups, using
++from pygments.token import *
++
++class MaudeLexer(RegexLexer):
++    "A Pygments lexer for the Maude language."
++
++    name = 'Maude'
++    aliases = ['maude']
++    filenames = ['*.maude']
++    mimetypes = ['text/x-maude']
++
++    tokens = {
++        'root': [
++            (r'\*\*\*\(', Comment.Multiline, 'multiline-comment'),
++            (r'(?:\*\*\*|---).*?$', Comment.Single),
++            (r'"(\\\\|\\"|[^"])*"', String.Double),
++            (r'\s+', Whitespace),
++            (words([
++                ",",
++                "(",
++                ")",
++                "[",
++                "]",
++                "{",
++                "}",
++            ],
++                   prefix=r'(?:(?<!\`)|^)',
++                   suffix=r'(?:(?!\`)|$)'),
++             Punctuation),
++            (r"(?:(?<=[\s,\(\)\[\]\{\}])|^)\.(?:(?=[\s,\(\)\[\]\{\}])|$)", Punctuation),
++            (words([
++                "&",
++                "abort",
++                "advise",
++                "advisories",
++                "advisory",
++                "alias",
++                "aliases",
++                "all",
++                "assoc",
++                "associative",
++                "attr",
++                "attribute",
++                "body",
++                "break",
++                "breakdown",
++                "cd",
++                "clear",
++                "cmd",
++                "color",
++                "comm",
++                "command",
++                "commutative",
++                "components",
++                "conceal",
++                "cond",
++                "condition",
++                "config",
++                "configuration",
++                "constructor",
++                "cont",
++                "continue",
++                "ctor",
++                "debug",
++                "deselect",
++                "ditto",
++                "do",
++                "e",
++                "E",
++                "eof",
++                "erew",
++                "erewrite",
++                "ex",
++                "exclude",
++                "extend",
++                "extending",
++                "flat",
++                "flattened",
++                "format",
++                "frew",
++                "frewrite",
++                "from",
++                "frozen",
++                "gather",
++                "gc",
++                "get",
++                "graph",
++                "id-hook",
++                "id:",
++                "idem",
++                "idempotent",
++                "identity:",
++                "in",
++                "inc",
++                "include",
++                "including",
++                "irredundant",
++                "is",
++                "iter",
++                "iterated",
++                "kinds",
++                "left",
++                "load",
++                "loop",
++                "ls",
++                "match",
++                "memo",
++                "message",
++                "metadata",
++                "mixfix",
++                "module",
++                "modules",
++                "msg",
++                "newline",
++                "nonexec",
++                "norm",
++                "normalize",
++                "number",
++                "obj",
++                "object",
++                "off",
++                "on",
++                "op-hook",
++                "otherwise",
++                "owise",
++                "paren",
++                "parens",
++                "parentheses",
++                "parse",
++                "path",
++                "poly",
++                "polymorphic",
++                "popd",
++                "pr",
++                "prec",
++                "precedence",
++                "print",
++                "profile",
++                "protect",
++                "protecting",
++                "push",
++                "pwd",
++                "q",
++                "quit",
++                "rat",
++                "rational",
++                "red",
++                "reduce",
++                "resume",
++                "reveal",
++                "rew",
++                "rewrite",
++                "right",
++                "s.t.",
++                "search",
++                "select",
++                "set",
++                "show",
++                "special",
++                "stats",
++                "step",
++                "strat",
++                "strategy",
++                "subst",
++                "substitution",
++                "such",
++                "summary",
++                "term-hook",
++                "that",
++                "timing",
++                "to",
++                "trace",
++                "unify",
++                "variant",
++                "variants",
++                "verbose",
++                "views",
++                "where",
++                "whole",
++                "with",
++                "xmatch",
++            ],
++                   prefix=r'(?:(?<=[\s,\(\)\[\]\{\}])|^)',
++                   suffix=r'(?:(?=[\s,\(\)\[\]\{\}])|$)'),
++             Keyword),
++            (words([
++                "endfm",
++                "endfth",
++                "endm",
++                "endth",
++                "endv",
++                "fmod",
++                "fth",
++                "mod",
++                "th",
++                "view",
++            ],
++                   prefix=r'(?:(?<=[\s,\(\)\[\]\{\}])|^)',
++                   suffix=r'(?:(?=[\s,\(\)\[\]\{\}])|$)'),
++             Keyword.Namespace),
++            (words([
++                "Bool",
++                "else",
++                "false",
++                "fi",
++                "then",
++                "true",
++                "if",
++            ],
++                   prefix=r'(?:(?<=[\s,\(\)\[\]\{\}])|^)',
++                   suffix=r'(?:(?=[\s,\(\)\[\]\{\}])|$)'),
++             Keyword.Pseudo),
++            (words([
++                "ceq",
++                "ceqs",
++                "cmb",
++                "cmbs",
++                "cq",
++                "crl",
++                "crls",
++                "eq",
++                "eqs",
++                "label",
++                "labels",
++                "mb",
++                "mbs",
++                "op",
++                "ops",
++                "rl",
++                "rls",
++                "rule",
++                "rules",
++                "sort",
++                "sorts",
++                "subsort",
++                "subsorts",
++                "var",
++                "vars",
++            ],
++                   prefix=r'(?:(?<=[\s,\(\)\[\]\{\}])|^)',
++                   suffix=r'(?:(?=[\s,\(\)\[\]\{\}])|$)'),
++             Keyword.Declaration),
++            (words([
++                "->",
++                ":",
++                ":=",
++                "*",
++                "/\\",
++                "+",
++                "<",
++                "<=?",
++                "=?",
++                "=",
++                "=>",
++                "~>",
++            ],
++                   prefix=r'(?:(?<=[\s,\(\)\[\]\{\}])|^)',
++                   suffix=r'(?:(?=[\s,\(\)\[\]\{\}])|$)'),
++             Operator),
++            (r'[+-]?[0-9]+', Number.Integer),
++            (r'[^\s,\(\)\[\]\{\}]+', Name),
++        ],
++        'multiline-comment': [
++            (r'[^\(\)]+', Comment.Multiline),
++            (r'\(', Comment.Multiline, '#push'),
++            (r'\)', Comment.Multiline, '#pop'),
++        ],
++    }
++
++class MaudeLogLexer(RegexLexer):
++    "A Pygments lexer for Maude interaction logs."
++
++    name = 'MaudeLog'
++    aliases = ['maude-log']
++    filenames = ['*.maude-log']
++    alias_filenames = ['*.txt',
++                       '*.log']
++    mimetypes = ['text/plain']
++
++    tokens = {
++        'root': [
++            (r'^((?:Maude)?>)(.*?)$', bygroups(Generic.Prompt,
++                                               using(MaudeLexer))),
++            (r'^.+?$', Generic.Output),
++        ],
++    }
+-- 
+2.13.5
+
