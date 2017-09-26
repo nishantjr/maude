@@ -1,4 +1,4 @@
-From e39c4c8eac4f54a35f4260f3f662b16ba0bc9b17 Mon Sep 17 00:00:00 2001
+From c5719f126565adc4910dbb4fbaa18f92ff78ea73 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 23 Sep 2017 10:32:40 -0500
 Subject: [PATCH] build, .gitignore: building cvc4 before maude
@@ -9,8 +9,8 @@ Subject: [PATCH] build, .gitignore: building cvc4 before maude
 -   Directory `/.build` is ignored (where build products will be placed).
 ---
  .gitignore |  1 +
- build      | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
+ build      | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/.gitignore b/.gitignore
 index d52ec4ee..46b5e7e5 100644
@@ -25,28 +25,37 @@ index d52ec4ee..46b5e7e5 100644
  .dirstamp
  Makefile
 diff --git a/build b/build
-index d8d01e09..9de0cae6 100755
+index d8d01e09..5fcb5f46 100755
 --- a/build
 +++ b/build
-@@ -3,6 +3,18 @@
+@@ -3,13 +3,26 @@
  export PATH="/usr/lib/ccache/bin:$PATH"
  export PATH="/usr/lib/ccache:$PATH"
  
 +top_dir="$(pwd)"
++build_dir="$top_dir/.build"
 +
-+( git submodule update --init \
-+    && cd src/SMT/cvc4 \
++git submodule update --init
++
++( cd src/SMT/cvc4 \
 +    && ./autogen.sh \
 +    && ./contrib/get-antlr-3.4 \
-+    && ./configure --prefix=$top_dir/.build/local \
++    && ./configure --prefix=$build_dir \
 +                   --with-antlr-dir=$(pwd)/antlr-3.4 ANTLR=$(pwd)/antlr-3.4/bin/antlr3 \
 +    && make -s -j4 \
-+    && make -s install
-+)
++    && make -s install )
 +
  automake --add-missing
  
  aclocal \
+     && autoconf \
+     && autoheader \
+     && automake \
+-    && ./configure \
++    && ./configure LDFLAGS="-L$build_dir/lib" \
+     && make -s -j4
+ 
+ git checkout -- src/Mixfix/surface.cc
 -- 
 2.13.5
 

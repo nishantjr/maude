@@ -1,4 +1,4 @@
-From 9f15516c4808eee62c723b2a38e49c80e6973d26 Mon Sep 17 00:00:00 2001
+From bdfd00629865189b882ee3e509b4b4ba44ffd26a Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Fri, 22 Sep 2017 09:14:42 -0500
 Subject: [PATCH] src/SMT/cvc4: adding cvc4 as submodule to make
@@ -22,11 +22,11 @@ index 00000000..dd43c604
 +	url = https://github.com/cvc4/cvc4
 diff --git a/src/SMT/cvc4 b/src/SMT/cvc4
 new file mode 160000
-index 00000000..69d511da
+index 00000000..aab07a32
 --- /dev/null
 +++ b/src/SMT/cvc4
 @@ -0,0 +1 @@
-+Subproject commit 69d511da599dc18fbf3d42571e0f23b8e1d39032
++Subproject commit aab07a32ae755d343bec226a746367e35b86098a
 -- 
 2.13.5
 
