@@ -1,2 +1,2 @@
-build_history maude-2.7-cvc4-pre
-merge_range   '^eker/maude-2.7-cvc4' 'origin/eker/develop'
+build_history maude-2.7.1
+merge_range   '^eker/maude-2.7.1' 'origin/eker/develop'

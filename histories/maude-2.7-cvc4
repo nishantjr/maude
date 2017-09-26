@@ -1,4 +1,5 @@
-build_history maude-2.7-cvc4-pre
-apply_patch   cvc4-submodule.patch
-apply_patch   build-cvc4.patch
-apply_patch   add-local-includes.patch
+build_history maude-2.7
+merge_range   '^eker/maude-2.7' 'eker/maude-2.7-cvc4'
+apply_patch   cvc4/01-add-submodule.patch
+apply_patch   cvc4/02-build-cvc4.patch
+apply_patch   cvc4/03-local-includes.patches
