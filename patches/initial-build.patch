@@ -1,4 +1,4 @@
-From bc5f61928f3c3b0eedc37b019060507a07d970e1 Mon Sep 17 00:00:00 2001
+From 146bb2d454780c917ef807cd8447db336333a052 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:10:14 -0500
 Subject: [PATCH] build (new), configure.ac: adding script to generate build
@@ -12,19 +12,20 @@ sync with the files which generate it.
 -   Building using autotools
 -   Parallel build `-j4`
 -   Quiet more informative build `-s`
+-   `./configure` adds `.build/{include,lib}` to the include/library paths
 -   Arguments to `./build` are passed to Maude's `./configure`
 ---
- build        | 17 +++++++++++++++++
+ build        | 22 ++++++++++++++++++++++
  configure.ac |  2 +-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ 2 files changed, 23 insertions(+), 1 deletion(-)
  create mode 100755 build
 
 diff --git a/build b/build
 new file mode 100755
-index 00000000..566abe8b
+index 00000000..3365fe14
 --- /dev/null
 +++ b/build
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,22 @@
 +#!/usr/bin/env bash
 +
 +export PATH="/usr/lib/ccache/bin:$PATH"
@@ -32,11 +33,16 @@ index 00000000..566abe8b
 +
 +automake --add-missing
 +
++top_dir="$(pwd)"
++build_dir="$top_dir/.build"
++include_dir="$build_dir/include"
++lib_dir="$build_dir/lib"
++
 +aclocal \
 +    && autoconf \
 +    && autoheader \
 +    && automake \
-+    && ./configure "$@" \
++    && ./configure CXXFLAGS="-I$include_dir -L$lib_dir" "$@" \
 +    && make -s -j4
 +
 +git checkout -- src/Mixfix/surface.cc
