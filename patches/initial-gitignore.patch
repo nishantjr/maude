@@ -1,19 +1,19 @@
-From fdfca7fec077c8f53412cb83556d2a6fdcd7d872 Mon Sep 17 00:00:00 2001
+From 6db470324ab3dfe66497a1a5a82d1c2a91bbbfd3 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:04:41 -0500
 Subject: [PATCH] .gitignore (new): ignoring build products
 
 ---
- .gitignore | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ .gitignore | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
  create mode 100644 .gitignore
 
 diff --git a/.gitignore b/.gitignore
 new file mode 100644
-index 00000000..d52ec4ee
+index 00000000..46b5e7e5
 --- /dev/null
 +++ b/.gitignore
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,34 @@
 +# metadata files
 +*~
 +*.sw*
@@ -26,6 +26,7 @@ index 00000000..d52ec4ee
 +/aclocal.m4
 +/configure
 +/config.*
++/.build
 +stamp-*
 +.dirstamp
 +Makefile
