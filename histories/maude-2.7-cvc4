@@ -1,3 +1,4 @@
 build_history maude-2.7
 merge_range   '^eker/maude-2.7' 'eker/maude-2.7-cvc4'
 apply_patch   cvc4/01-add-submodule.patch
+apply_patch   cvc4/02-build-cvc4.patch
