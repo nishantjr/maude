@@ -1,4 +1,4 @@
-From 5f7487bec6a25aa968bfa6d314e3df05ced0109d Mon Sep 17 00:00:00 2001
+From bc5f61928f3c3b0eedc37b019060507a07d970e1 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:10:14 -0500
 Subject: [PATCH] build (new), configure.ac: adding script to generate build
@@ -11,7 +11,8 @@ sync with the files which generate it.
 -   Using ccache (if it's available)
 -   Building using autotools
 -   Parallel build `-j4`
--   Quite more informative build `-s`
+-   Quiet more informative build `-s`
+-   Arguments to `./build` are passed to Maude's `./configure`
 ---
  build        | 17 +++++++++++++++++
  configure.ac |  2 +-
@@ -20,7 +21,7 @@ sync with the files which generate it.
 
 diff --git a/build b/build
 new file mode 100755
-index 00000000..d8d01e09
+index 00000000..566abe8b
 --- /dev/null
 +++ b/build
 @@ -0,0 +1,17 @@
@@ -35,7 +36,7 @@ index 00000000..d8d01e09
 +    && autoconf \
 +    && autoheader \
 +    && automake \
-+    && ./configure \
++    && ./configure "$@" \
 +    && make -s -j4
 +
 +git checkout -- src/Mixfix/surface.cc
