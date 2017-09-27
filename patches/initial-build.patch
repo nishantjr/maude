@@ -1,4 +1,4 @@
-From 146bb2d454780c917ef807cd8447db336333a052 Mon Sep 17 00:00:00 2001
+From 95b339212ad405808f658ae29710bbbe8b83b750 Mon Sep 17 00:00:00 2001
 From: Everett Hildenbrandt <hildenb2@illinois.edu>
 Date: Sat, 9 Sep 2017 21:10:14 -0500
 Subject: [PATCH] build (new), configure.ac: adding script to generate build
@@ -22,7 +22,7 @@ sync with the files which generate it.
 
 diff --git a/build b/build
 new file mode 100755
-index 00000000..3365fe14
+index 00000000..cfeba0ac
 --- /dev/null
 +++ b/build
 @@ -0,0 +1,22 @@
@@ -31,12 +31,12 @@ index 00000000..3365fe14
 +export PATH="/usr/lib/ccache/bin:$PATH"
 +export PATH="/usr/lib/ccache:$PATH"
 +
-+automake --add-missing
-+
 +top_dir="$(pwd)"
 +build_dir="$top_dir/.build"
 +include_dir="$build_dir/include"
 +lib_dir="$build_dir/lib"
++
++automake --add-missing
 +
 +aclocal \
 +    && autoconf \
