@@ -36,7 +36,7 @@ fi
 USER_SET_CXXFLAGS=yes
 if (test -z "$CXXFLAGS") then
   USER_SET_CXXFLAGS=no
-  CXXFLAGS="-std=c++11 -g -Wall"
+  CXXFLAGS="-g -Wall -std=c++11 -I$(srcdir)/.build/include"
 fi
 #
 #	*** PROGRAMS ***

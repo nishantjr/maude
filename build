@@ -3,18 +3,13 @@
 export PATH="/usr/lib/ccache/bin:$PATH"
 export PATH="/usr/lib/ccache:$PATH"
 
-top_dir="$(pwd)"
-build_dir="$top_dir/.build"
-include_dir="$build_dir/include"
-lib_dir="$build_dir/lib"
-
 automake --add-missing
 
 aclocal \
     && autoconf \
     && autoheader \
     && automake \
-    && ./configure CXXFLAGS="-I$include_dir -L$lib_dir" "$@" \
+    && ./configure "$@" \
     && make -s -j4
 
 git checkout -- src/Mixfix/surface.cc
