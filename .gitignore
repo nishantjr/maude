@@ -17,6 +17,7 @@ Makefile
 Makefile.in
 .deps
 lib*.a
+*.o
 
 # testing files
 *.log
