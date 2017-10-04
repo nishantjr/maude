@@ -43,7 +43,7 @@ checkout() {
 
 apply_patch() {
     patch_name="$1"; shift
-    git show "$builder_branch:patches/$patch_name" | git am
+    git show "$base_dir/patches/$patch_name" | git am
 }
 
 merge_range() {
@@ -80,7 +80,7 @@ build_history() {
     local hist_file="$1"; shift
     local hist_branch="build-hist/$hist_file"
     existsing_history="$(git rev-parse --verify "$hist_branch" 2>/dev/null)" \
-        || ( source <(git show "$builder_branch:histories/$hist_file") \
+        || ( source <(git show "$base_dir/histories/$hist_file") \
                 && git branch "$hist_branch" HEAD )
     git checkout "$(git rev-parse "$hist_branch")"
 }
@@ -89,7 +89,6 @@ build_history() {
 # ====
 
 hist_dir='histories'
-builder_branch="second-order/hist-rebuilder"
 tmp_worktree=".build/worktree"
 
 usage() {
@@ -103,8 +102,7 @@ usage() {
 
 history="$1" && [[ -f "$hist_dir/$history" ]] || usage
 
-git checkout    'eker/maude-2.0.1^'
 reset_worktree  "$tmp_worktree"
+git checkout    'eker/maude-2.0.1^'
 build_history   "$history"
 clean_worktree  "$tmp_worktree"
-git checkout    "$builder_branch"
