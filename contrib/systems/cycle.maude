@@ -1,0 +1,11 @@
+mod CYCLE is
+    sorts PreState State .
+
+    ops a b c : -> PreState .
+    ops f g : PreState -> State .
+    -----------------------------
+    rl f(a) => f(b) .
+    rl f(a) => g(c) .
+    rl f(b) => f(c) .
+    rl f(c) => f(a) .
+endm
