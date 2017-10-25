@@ -4,8 +4,17 @@ mod CYCLE is
     ops a b c : -> PreState .
     ops f g : PreState -> State .
     -----------------------------
-    rl f(a) => f(b) .
-    rl f(a) => g(c) .
-    rl f(b) => f(c) .
-    rl f(c) => f(a) .
+    rl [a2b] : f(a) => f(b) [narrowing] .
+    rl [a2c] : f(a) => g(c) [narrowing] .
+    rl [b2c] : f(b) => f(c) [narrowing] .
+    rl [c2a] : f(c) => f(a) [narrowing] .
+endm
+
+mod EXT-CYCLE is
+    extending CYCLE .
+
+    op g : PreState -> State .
+    --------------------------
+    rl [a2c] : g(a) => g(c) [narrowing] .
+    rl [c2a] : g(c) => g(a) [narrowing] .
 endm
