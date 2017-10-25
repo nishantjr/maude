@@ -1,3 +1,5 @@
+load ../tools/varsat/numbers.maude
+
 mod CYCLE is
     sorts PreState State .
 
@@ -17,4 +19,22 @@ mod EXT-CYCLE is
     --------------------------
     rl [a2c] : g(a) => g(c) [narrowing] .
     rl [c2a] : g(c) => g(a) [narrowing] .
+endm
+
+mod BOUNDED-CYCLE is
+   protecting NAT* .
+
+    sort State .
+    ------------
+    vars N M L : Nat* .
+
+    op {_,_} : Nat* Nat* -> State .
+    -------------------------------
+    rl [add] : { N           , L :+ 1 :+ N :+ M }
+            => { N :+ L :+ 1 , L :+ 1 :+ N :+ M }
+       [narrowing] .
+
+    rl [rm]  : { N :+ L :+ 1 , M }
+            => { N           , M }
+       [narrowing] .
 endm
