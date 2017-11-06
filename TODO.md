@@ -23,6 +23,12 @@ Concrete
     interacts with git submodules. Check [this Stack Overflow post] for
     inspiration.
 
+    njr: automakes subprojects will probably not work. This method would
+    result in `make install` installing the `yices` includes, libraries
+    and other build products under `$prefix`. This would create
+    problems, for example, if yices2 has already been installed by the
+    system's package manager.
+
 [this Stack Overflow post]: https://stackoverflow.com/questions/11776382/how-to-handle-subprojects-with-autotools
 
 Amorphous
