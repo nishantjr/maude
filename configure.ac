@@ -16,7 +16,7 @@ AC_CANONICAL_HOST
 #
 #	Initialize automake stuff.
 #
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 #
 #	Cause defines to be put in a header file rather than passed as
 #	compiler flags.
@@ -40,6 +40,7 @@ fi
 #
 #	*** PROGRAMS ***
 #
+AM_PROG_AR
 AC_PROG_CC
 AC_PROG_CXX
 if (test "$GXX" = yes) then
