@@ -419,4 +419,5 @@ AC_CONFIG_FILES([Makefile
 		 tests/tools/meta/Makefile
 ])
 
+AC_CONFIG_SUBDIRS([src/3rdParty/yices2])
 AC_OUTPUT
