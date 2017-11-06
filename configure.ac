@@ -379,6 +379,8 @@ fi
 #
 AM_CONDITIONAL(BUILD_COMPILER, test $COMPILER = yes) 
 
+AC_CONFIG_SUBDIRS([ext/yices])
+
 AC_CONFIG_FILES([Makefile
 	         src/Makefile
 		 src/3rdParty/Makefile

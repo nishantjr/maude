@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 top_dir="$(pwd)"
 build_dir="$top_dir/.build"
 include_dir="$build_dir/include"
